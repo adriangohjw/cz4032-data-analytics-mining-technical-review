@@ -9,14 +9,14 @@ class QueryProcessor:
         result[word] = 0 
       result[word] += 1
     
-    return self.__get_scoring(result, document_df_dict)
+    return self.__get_normalized_scoring(result, document_df_dict)
   
 
-  def __get_scoring(self, tf_dict, document_df_dict):
+  def __get_normalized_scoring(self, tf_dict, document_df_dict):
     result = {}
 
     for key, value in tf_dict.items():
-      tf_log = 1 + math.log(value)
+      tf_log = 1 + math.log(value, 10)
       tf_idf = tf_log * self.__get_idf_from_document_df_dict_by_key(key, document_df_dict)
       result[key] = {
         'tf': value,
@@ -49,22 +49,36 @@ class DocumentProcessor:
     cleaned_text_list = cleaned_text.split()
     
     result = {}
-    for term in self.unique_terms(cleaned_query):
+    for term in self.__unique_terms(cleaned_query):
       result[term] = cleaned_text_list.count(term)
     
-    return self.add_term_frequency_log_to_dict(result)
+    return self.__get_normalized_scoring(result)
 
 
-  def unique_terms(self, query):
+  def __unique_terms(self, query):
     return list(set(query.split()))
+
   
-  
-  def add_term_frequency_log_to_dict(self, tf_dict):
+  def __get_normalized_scoring(self, tf_dict):
     result = {}
     for key, value in tf_dict.items():
+      tf_log = 0 if value == 0 else 1 + math.log(value, 10)
       result[key] = {
         'tf': value,
-        'tf-log': 0 if value == 0 else 1 + math.log(value)
+        'tf_log': tf_log,
+        'tf_idf': tf_log * 1
       }
       
-    return result
+    return self.__normalize_scoring(result)
+  
+  
+  def __normalize_scoring(self, scoring_dict):
+    sum_of_tf_idf_squared = 0
+    for _, value in scoring_dict.items():
+      sum_of_tf_idf_squared += value['tf_idf'] ** 2
+    normalization_factor = 1 / math.sqrt(sum_of_tf_idf_squared)
+    
+    for key, value in scoring_dict.items():
+      scoring_dict[key]['norm'] = value['tf_idf'] * normalization_factor
+  
+    return scoring_dict
