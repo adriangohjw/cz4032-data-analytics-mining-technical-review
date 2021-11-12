@@ -1,4 +1,4 @@
-import math
+import math  
 
 class QueryProcessor:
   def call(self, query, document_df_dict):
