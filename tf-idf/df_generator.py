@@ -25,7 +25,7 @@ class DocumentProcessor:
     for key, value in df_dict.items():
       result[key] = {
         'df': value,
-        'idf': math.log(document_count / value)
+        'idf': math.log(document_count / value, 10)
       }
 
     return result
