@@ -36,7 +36,7 @@ class QueryProcessor:
     sum_of_tf_idf_squared = 0
     for _, value in scoring_dict.items():
       sum_of_tf_idf_squared += value['tf_idf'] ** 2
-    normalization_factor = 1 / math.sqrt(sum_of_tf_idf_squared)
+    normalization_factor = 1 / math.sqrt(sum_of_tf_idf_squared) if sum_of_tf_idf_squared != 0 else 0
     
     for key, value in scoring_dict.items():
       scoring_dict[key]['norm'] = value['tf_idf'] * normalization_factor
