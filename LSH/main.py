@@ -4,7 +4,7 @@ import pandas as pd
 
 def main():
     ind_list = pd.read_csv("index.csv")
-    distances = ["cosine", "jaccard", "hamming"]
+    distances = ["cosine"]
     br = [(250, 20), (500, 10), (31, 160)]
 
     for d, dist in enumerate(distances):
