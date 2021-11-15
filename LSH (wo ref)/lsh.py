@@ -1,8 +1,11 @@
 from operator import itemgetter
 import numpy as np
 import random as rnd
+
+import sys
+sys.path.insert(0, 'tf-idf')
 from data_cleaning import DocumentsCleaner
-import data_processor
+from data_processor import load_dataset
 
 len_buckets = 101#choice a prime number
 hash_table = [[] for i in range(len_buckets)]
@@ -11,7 +14,7 @@ hash_table = [[] for i in range(len_buckets)]
 DATA_SOURCE = 'data/mcf_data.csv'
 DELIMITER = ','
 
-df = data_processor.load_dataset(DATA_SOURCE, DELIMITER)
+df = load_dataset(DATA_SOURCE, DELIMITER)
 cleaned_documents = DocumentsCleaner.duplicate_col(0, df, "description")
 cleaned_documents = cleaned_documents[["uuid",'description_cleaned']]
 # cleaned_documents = cleaned_documents[cleaned_documents.columns[3]]
