@@ -1,22 +1,22 @@
-'''
-3.4.3 Combining the Techiniques
-Mining of Massive Datasets
-Rajaraman,Leskovec,Ullman
-'''
-
-#
-#Developed by Andre H. Costa Silva
-#11/09/2013
-#
-
 from operator import itemgetter
-
 import numpy as np
 import random as rnd
+from hello.data_cleaning import DuplicateCleaner
+from data_processor import load_dataset
 
 len_buckets = 101#choice a prime number
 hash_table = [[] for i in range(len_buckets)]
 
+
+DATA_SOURCE = 'data/mcf_data.csv'
+DELIMITER = ','
+
+df = load_dataset(DATA_SOURCE, DELIMITER)
+cleaned_documents = DuplicateCleaner.duplicate_col(df, 'description')
+cleaned_documents = cleaned_documents[["uuid",'description_cleaned']]
+# cleaned_documents = cleaned_documents[cleaned_documents.columns[3]]
+
+print(cleaned_documents)
 
 def initialize_array_bucket(bands):
     global len_buckets
@@ -235,8 +235,11 @@ d5 = "conheco voce pessoalmente"
 d6 = "acho que eu conheco voce"
 d7 = "eu conheco voce pessoalmente"
 
-docs = [d0,d1,d2,d3,d4,d5,d6,d7]
-docsChange,shingles = construct_set_shingles(docs[:],k)
+
+docs = cleaned_documents["description_cleaned"].tolist()
+print(docs)
+print(len(docs))
+docsChange,shingles = construct_set_shingles(docs[:5],k)
 
 matrix = sort_document_shingle(docsChange,shingles)
 print("matrix: ", matrix)
@@ -250,8 +253,13 @@ j = 5
 
 if j > len(sort):
     j = len(sort)
-    
+
+# Implement function to compare query to docs
+
+# Optimize lsh, what is the shingle size, etc etc
+
+# Implement similarity search results function
 print('The #',j,'most similar:\n')
 for i in range(j):
     pair = sort[i][0]
-    print (i+1),'o. ==> ', docs[pair[0]],'( doc.',pair[0],') & ',docs[pair[1]],'( doc.',pair[1],') ==> ',sort[i][1]*100,'%\n'
+    print((i+1),'o. ==> ', docs[pair[0]],'( doc.',pair[0],') & ',docs[pair[1]],'( doc.',pair[1],') ==> ',sort[i][1]*100,'%\n')
