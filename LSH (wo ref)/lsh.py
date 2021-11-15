@@ -217,8 +217,9 @@ def apply_LSH_technique(SIG,t,bands=4,rows=3):
                     A = SIG[:,item[0]]
                     B = SIG[:,item[1]]
                     similarity = cosine_distance(A,B)
-                    if similarity >= t:
-                        candidates[pair] = similarity
+                    # if similarity >= t:
+                    candidates[pair] = similarity
+                    print("222222222:",candidates)
 
 
     #print 
@@ -229,40 +230,45 @@ def apply_LSH_technique(SIG,t,bands=4,rows=3):
         
 k = 3 #number of shingles
 
-d0 = "eu conheco voce"
-d1 = "penso que te conheco"
-d2 = "eu fiz aquilo"
-d3 = "fiz isso"
-d4 = "ela disse que conhece voce"
-d5 = "conheco voce pessoalmente"
-d6 = "acho que eu conheco voce"
-d7 = "eu conheco voce pessoalmente"
+# query = 'java javascript react'
+d0 = "java javascript react" 
 
 
+
+
+# Reading of file
 docs = cleaned_documents["description_cleaned"].tolist()
-print(docs)
-print(len(docs))
-docsChange,shingles = construct_set_shingles(docs[:5],k)
+for i in range(5):
+    d1 = docs[i]
+    newdocs = [d0,d1]
+    print(newdocs)    
 
-matrix = sort_document_shingle(docsChange,shingles)
-print("matrix: ", matrix)
 
-SIG = compute_minHash_signatures(matrix,1000)
-print("SIG: ", SIG)
+    docsChange,shingles = construct_set_shingles(newdocs[:],k)
+    print(docsChange)
+    print(shingles)
 
-candidates,sort = apply_LSH_technique(SIG,0.8,100,10)
+    matrix = sort_document_shingle(docsChange,shingles)
+    print("matrix: ", matrix)
 
-j = 5
+    SIG = compute_minHash_signatures(matrix,1000)
+    print("SIG: ", SIG)
 
-if j > len(sort):
-    j = len(sort)
+    candidates,sort = apply_LSH_technique(SIG,0.8,100,10)
+    print("CANNNN:", candidates)
+    print("SORTTTTTTT:",sort)
+
+    j = 5
+
+    if j > len(sort):
+        j = len(sort)
 
 # Implement function to compare query to docs
 
 # Optimize lsh, what is the shingle size, etc etc
 
 # Implement similarity search results function
-print('The #',j,'most similar:\n')
-for i in range(j):
-    pair = sort[i][0]
-    print((i+1),'o. ==> ', docs[pair[0]],'( doc.',pair[0],') & ',docs[pair[1]],'( doc.',pair[1],') ==> ',sort[i][1]*100,'%\n')
+    print('The #',j,'most similar:\n')
+    # for i in range(j):
+    #     pair = sort[i][0]
+    #     print((i+1),'o. ==> ', docs[pair[0]],'( doc.',pair[0],') & ',docs[pair[1]],'( doc.',pair[1],') ==> ',sort[i][1]*100,'%\n')
