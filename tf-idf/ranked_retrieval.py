@@ -2,6 +2,7 @@ import data_cleaning
 import df_generator
 import score_calculator
 import time
+import performance_analyzer
 
 class RankedRetrieval:
   def __init__(self, query, documents, colname):
@@ -26,6 +27,10 @@ class RankedRetrieval:
     self.__calculate_score_for_all_documents()
     self.__ranked_documents()
     print(">>>>> Time to compute score for each documents: " + str(time.process_time() - start) + "secs")
+    
+    df_original_size = performance_analyzer.get_df_memory_size_in_bytes(self.documents)
+    df_processed_size = performance_analyzer.get_df_memory_size_in_bytes(self.cleaned_documents)
+    print(">>>>> Additional memory (MB): " + str(df_processed_size - df_original_size) + "B")
   
 
   def call(self):
