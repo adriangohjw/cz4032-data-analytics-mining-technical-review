@@ -4,7 +4,8 @@ import random as rnd
 
 import sys
 sys.path.insert(0, 'tf-idf')
-from data_cleaning import DocumentsCleaner
+import data_cleaning
+# from data_cleaning import DocumentsCleaner
 from data_processor import load_dataset
 
 len_buckets = 101#choice a prime number
@@ -15,7 +16,7 @@ DATA_SOURCE = 'data/mcf_data.csv'
 DELIMITER = ','
 
 df = load_dataset(DATA_SOURCE, DELIMITER)
-cleaned_documents = DocumentsCleaner.duplicate_col(0, df, "description")
+cleaned_documents = data_cleaning.DocumentsCleaner().call(df, "description")
 cleaned_documents = cleaned_documents[["uuid",'description_cleaned']]
 # cleaned_documents = cleaned_documents[cleaned_documents.columns[3]]
 
@@ -34,6 +35,7 @@ def hash(substr):
 
 def hash_minHash(x,var,cons,n):
     return (var*x + cons) % n
+
 
 def generate_hash_functions(n):
     hash_funcs = []
@@ -219,7 +221,7 @@ def apply_LSH_technique(SIG,t,bands=4,rows=3):
                     similarity = cosine_distance(A,B)
                     # if similarity >= t:
                     candidates[pair] = similarity
-                    print("222222222:",candidates)
+                    print("candidatesss:",candidates)
 
 
     #print 
@@ -232,9 +234,8 @@ k = 3 #number of shingles
 
 # query = 'java javascript react'
 d0 = "java javascript react" 
-
-
-
+d5 = "java javascript react"
+d6 = "hello my name"
 
 # Reading of file
 docs = cleaned_documents["description_cleaned"].tolist()
@@ -255,7 +256,6 @@ for i in range(5):
     print("SIG: ", SIG)
 
     candidates,sort = apply_LSH_technique(SIG,0.8,100,10)
-    print("CANNNN:", candidates)
     print("SORTTTTTTT:",sort)
 
     j = 5

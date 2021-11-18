@@ -29,7 +29,6 @@ class DocumentsCleaner:
     df = self.duplicate_col(df, colname)
     df = self.remove_stop_words(df, cleaned_colname)
     df = self.remove_special_chars(df, cleaned_colname)
-    df = self.trim(df, cleaned_colname)
     df = self.lowercase(df, cleaned_colname)
     return df
 
@@ -45,9 +44,9 @@ class DocumentsCleaner:
     df[colname] = df[colname].apply(lambda x: re.sub('[^a-zA-Z0-9 \n\.]', ' ', x))
     return df
 
-  def trim(self, df, colname):
-    df[colname] = df[colname].apply(lambda x: ' '.join(x.split()))
-    return df
+  # def trim(self, df, colname):
+  #   df[colname] = df[colname].apply(lambda x: ' '.join(x.split()))
+  #   return df
 
   def lowercase(self, df, colname):
     df[colname] = df[colname].apply(lambda x: x.lower())
