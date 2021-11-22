@@ -19,7 +19,7 @@ class DocumentsCleaner:
     return df
 
   def remove_special_chars(self, df, colname):
-    df[colname] = df[colname].apply(lambda x: re.sub('[^a-zA-Z0-9 \n\.]', ' ', x))
+    df[colname] = df[colname].apply(lambda x: re.sub('[^A-Za-z0-9]+', ' ', x))
     return df
 
   def lowercase(self, df, colname):
