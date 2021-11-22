@@ -14,7 +14,7 @@ class QueryCleaner:
     return remove_stopwords(query)
   
   def remove_special_chars(self, query):
-    return re.sub('[^a-zA-Z0-9 \n\.]', ' ', query)
+    return re.sub('[^A-Za-z0-9]+', ' ', query)
   
   def trim(self, query):
     return ' '.join(query.split())
@@ -43,7 +43,7 @@ class DocumentsCleaner:
     return df
 
   def remove_special_chars(self, df, colname):
-    df[colname] = df[colname].apply(lambda x: re.sub('[^a-zA-Z0-9 \n\.]', ' ', x))
+    df[colname] = df[colname].apply(lambda x: re.sub('[^A-Za-z0-9]+', ' ', x))
     return df
 
   def trim(self, df, colname):
