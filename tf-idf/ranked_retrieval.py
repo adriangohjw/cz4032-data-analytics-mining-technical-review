@@ -10,6 +10,8 @@ class RankedRetrieval:
     self.documents = documents
     self.colname = colname
     
+    overall_start = time.process_time()
+  
     start = time.process_time()
     self.cleaned_query = data_cleaning.QueryCleaner().call(self.query)
     print(">>>>> Time to clean query: " + str(time.process_time() - start) + "secs")
@@ -27,6 +29,9 @@ class RankedRetrieval:
     self.__calculate_score_for_all_documents()
     self.__ranked_documents()
     print(">>>>> Time to compute score for each documents: " + str(time.process_time() - start) + "secs")
+    
+    overall_end = time.process_time() - overall_start
+    print(">>>>> Total time (sum): " + str(overall_end) + "secs")
     
     df_original_size = performance_analyzer.get_df_memory_size_in_bytes(self.documents)
     df_processed_size = performance_analyzer.get_df_memory_size_in_bytes(self.cleaned_documents)
