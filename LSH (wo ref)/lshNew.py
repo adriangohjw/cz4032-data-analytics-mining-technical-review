@@ -6,9 +6,6 @@ import sys
 sys.path.insert(0, 'tf-idf')
 import data_cleaning
 from data_processor import load_dataset
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 #data500 = pd.read_csv('data/mcf_data_500.csv')
 #data1000 = pd.read_csv('data/mcf_data_1000.csv')
@@ -96,37 +93,6 @@ def cosine_distance(x,y):
     B = euclidean_distance(y,zeros)
     return prodAB / (A*B)
 
-results = pd.DataFrame({
-    's': [],
-    'P': [],
-    'r,b': []
-})
-
-def probability(s, r, b):
-    # s: similarity
-    # r: rows (per band)
-    # b: number of bands
-    return 1 - (1 - s**r)**b
-
-#Part 1: Comment part 1 or part 2 out and run them one at a time
-#Graph component showing the effects of b and r on probability of returning a candidate pair
-# for s in np.arange(0.01, 1, 0.01):
-#     total = 100
-#     for b in [100, 50, 25, 20, 10, 5, 4, 2, 1]:
-#         r = int(total/b)
-#         P = probability(s, r, b)
-#         results = results.append({
-#             's': s,
-#             'P': P,
-#             'r,b': f"{r},{b}"
-#         }, ignore_index=True)
-# sns.lineplot(data=results, x='s', y='P', hue='r,b')
-# plt.xlabel("Similarity")
-# plt.ylabel("Probability of sharing bucket")
-# plt.show()
-
-# Part 2: Comment out either part 1 or part 2 and run them one at a time
-# For getting the similarity, time taken and space taken
 for DATA_FILES in DATA_SOURCE:
     df = load_dataset(DATA_FILES, DELIMITER)
     cleaned_documents = data_cleaning.DocumentsCleaner().call(df, "description")
@@ -139,7 +105,7 @@ for DATA_FILES in DATA_SOURCE:
     for lines in cleaned_documents["description_cleaned"]:
         #preparing the shingles
         newquery = shingle(query,k)
-        newlines = shingle(lines,k)
+        newlines = shingle(str(lines),k)
         vocab = list(newquery.union(newlines))
 
         #preparing one hot
@@ -150,6 +116,7 @@ for DATA_FILES in DATA_SOURCE:
 
         query_sig = create_hash(query_1hot)
         line_sig = create_hash(line_1hot)
+
         similarity = cosine_distance(query_sig,line_sig)
         similarity_list.append(similarity)
 
