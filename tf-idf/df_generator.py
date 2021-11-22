@@ -11,8 +11,8 @@ class DocumentProcessor:
   
   def __get_document_frequency(self, df, colname):
     result = {}
-    for cell in list(df[colname]):
-      for word in set(cell.split()):
+    for record in df[colname]:
+      for word in set(record):
         if word in result:
           result[word] += 1
         else:

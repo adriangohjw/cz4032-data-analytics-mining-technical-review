@@ -14,7 +14,7 @@ class QueryCleaner:
     return remove_stopwords(query)
   
   def remove_special_chars(self, query):
-    return re.sub('[^a-zA-Z0-9 \n\.]', ' ', query)
+    return re.sub('[^A-Za-z0-9]+', ' ', query)
   
   def trim(self, query):
     return ' '.join(query.split())
@@ -31,6 +31,7 @@ class DocumentsCleaner:
     df = self.remove_special_chars(df, cleaned_colname)
     df = self.trim(df, cleaned_colname)
     df = self.lowercase(df, cleaned_colname)
+    df = self.split_into_unique_words(df, cleaned_colname)
     return df
 
   def duplicate_col(self, df, colname):
@@ -42,7 +43,7 @@ class DocumentsCleaner:
     return df
 
   def remove_special_chars(self, df, colname):
-    df[colname] = df[colname].apply(lambda x: re.sub('[^a-zA-Z0-9 \n\.]', ' ', x))
+    df[colname] = df[colname].apply(lambda x: re.sub('[^A-Za-z0-9]+', ' ', x))
     return df
 
   def trim(self, df, colname):
@@ -51,4 +52,8 @@ class DocumentsCleaner:
 
   def lowercase(self, df, colname):
     df[colname] = df[colname].apply(lambda x: x.lower())
+    return df
+  
+  def split_into_unique_words(self, df, colname):
+    df[colname] = df[colname].apply(lambda x: x.split())
     return df

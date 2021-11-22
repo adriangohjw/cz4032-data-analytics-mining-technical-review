@@ -9,7 +9,10 @@ class RankedRetrieval:
     self.query = query
     self.documents = documents
     self.colname = colname
+    self.original_documents_size = performance_analyzer.DF(documents).get_df_memory_size_in_bytes()
     
+    overall_start = time.process_time()
+  
     start = time.process_time()
     self.cleaned_query = data_cleaning.QueryCleaner().call(self.query)
     print(">>>>> Time to clean query: " + str(time.process_time() - start) + "secs")
@@ -28,9 +31,12 @@ class RankedRetrieval:
     self.__ranked_documents()
     print(">>>>> Time to compute score for each documents: " + str(time.process_time() - start) + "secs")
     
-    df_original_size = performance_analyzer.get_df_memory_size_in_bytes(self.documents)
-    df_processed_size = performance_analyzer.get_df_memory_size_in_bytes(self.cleaned_documents)
-    print(">>>>> Additional memory (MB): " + str(df_processed_size - df_original_size) + "B")
+    overall_end = time.process_time() - overall_start
+    print(">>>>> Total time (sum): " + str(overall_end) + "secs")
+    
+    df_processed_size = performance_analyzer.DF(self.cleaned_documents).get_df_memory_size_in_bytes()
+    total_memory = self.__total_additional_memory_used(df_processed_size - self.original_documents_size)
+    print(">>>>> Additional memory (MB): " + str(total_memory / 1000000) + "MB")
   
 
   def call(self):
@@ -57,3 +63,10 @@ class RankedRetrieval:
     
   def __ranked_documents(self):
     self.cleaned_documents = self.cleaned_documents.sort_values(by='score', ascending=False)
+    
+    
+  def __total_additional_memory_used(self, additional_memory_in_bytes):
+    return \
+      performance_analyzer.OneNestedDictionary(self.document_df_dict).get_df_memory_size_in_bytes() + \
+      performance_analyzer.OneNestedDictionary(self.query_tf_dict).get_df_memory_size_in_bytes() + \
+      additional_memory_in_bytes
