@@ -45,9 +45,7 @@ class QueryProcessor:
 
 
 class DocumentProcessor:
-  def call(self, cleaned_query, cleaned_text):
-    cleaned_text_list = cleaned_text.split()
-    
+  def call(self, cleaned_query, cleaned_text_list):    
     result = {}
     for term in self.__unique_terms(cleaned_query):
       result[term] = cleaned_text_list.count(term)
